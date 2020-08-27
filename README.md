@@ -1,6 +1,6 @@
 # java-adonis-websocket
 
-Remove personally identifiable information from text. Inspired by https://github.com/utsavstha/adonis-websocket-client-android
+Connect to an Adonis websocket server from a Java client. Inspired by https://github.com/utsavstha/adonis-websocket-client-android
 
 Requirements:
  - Java 1.7+
