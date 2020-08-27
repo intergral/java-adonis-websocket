@@ -497,9 +497,9 @@ public class AdonisWebSocketClient
             }
 
             // Send data in queue
-            for( String event : onOpenMessageQueue.keySet() )
+            for( Map.Entry<String, String> entry : onOpenMessageQueue.entrySet() )
             {
-                send( event, onOpenMessageQueue.get( event ) );
+                send( entry.getKey(), entry.getValue() );
             }
             // clear queue
             onOpenMessageQueue.clear();
