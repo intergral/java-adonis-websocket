@@ -43,7 +43,7 @@ limitations under the License.
         <allowed.methods>0</allowed.methods>
         <allowed.classes>0</allowed.classes>
         <allowed.fail>true</allowed.fail>
-        <fail.if.no.tests>true</fail.if.no.tests>
+        <fail.if.no.tests>false</fail.if.no.tests>
 
         <!-- plugin versions -->
         <maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
