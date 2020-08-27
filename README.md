@@ -20,3 +20,20 @@ Requirements:
             }
         } );
 ```
+
+## Maven
+
+Add as a dependency with maven:
+```xml
+<dependency>
+    <groupId>com.nerdvision</groupId>
+    <artifactId>java-adonis-websocket</artifactId>
+    <version>0.0.1</version>
+</dependency>
+```
+
+# Building
+This project used maven to build and supports Java 1.7+. Build and test with `mvn clean verify`.
+
+# Contributing
+To contribute ensure the build passes using the above command, and submit a Pull Request.
