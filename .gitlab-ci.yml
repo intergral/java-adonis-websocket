@@ -1,0 +1,28 @@
+cache:
+  paths:
+    - maven.repository/
+
+variables:
+  MAVEN_OPTS: '-Dmaven.repo.local=maven.repository/'
+
+stages:
+  - build
+
+branch_build:
+  stage: build
+  image: maven:3-jdk-7
+  except:
+    - tags
+  script:
+    - mvn -B -U -s .ci_settings.xml clean verify
+    - cat target/site/jacoco/index.html | grep -o 'Total[^%]*%' | sed -e 's/Total/Jacoco-Test-Coverage:/g' | sed -e 's/<.*ctr2">//g'
+  coverage: '/Jacoco-Test-Coverage:[0-9]+%/'
+
+tag_build:
+  stage: build
+  image: registry.gitlab.com/intergral/docker/build-images/maven-3:external-gpg-java-7
+  only:
+    - tags
+  script:
+    - mvn -B -U -s .ci_settings.xml versions:set -DnewVersion=${CI_COMMIT_TAG}
+    - mvn -B -U -s .ci_settings.xml clean deploy -P release-ossrh
