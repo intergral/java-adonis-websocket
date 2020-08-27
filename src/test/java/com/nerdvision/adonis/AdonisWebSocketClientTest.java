@@ -1,36 +1,24 @@
+/*
+ Copyright [2020] [Intergral GmbH]
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+*/
+
 package com.nerdvision.adonis;
 
 import org.junit.Test;
 
 public class AdonisWebSocketClientTest
 {
-    @Test
-    public void name() throws InterruptedException
-    {
-        final AdonisWebSocketClient build = AdonisWebSocketClient.Builder
-                .with( "wss://api.nerd.vision/stream-debugger-ws-service/ws?group=5e57b24848c6842f7f251be2&token=rY6spyDAT8mWUOFTG7mWa9F03Jm5xyUnjl0AC5AS2rJBsIU2swhV34xnotCytmmI" )
-                .build();
-        build.setOnChangeStateListener( new AdonisWebSocketClient.OnStateChangeListener()
-        {
-            @Override
-            public void onChange( final AdonisWebSocketClient.State status )
-            {
-                System.out.println(status);
-            }
-        } );
-        final AdonisWebSocketClient connect = build
-                .connect();
-        connect
-                .join( "breakpoints" );
-        connect.onEvent( "update", new AdonisWebSocketClient.OnEventListener()
-        {
-            @Override
-            public void onMessage( final String event )
-            {
-                System.out.println( event );
-            }
-        } );
 
-        Thread.sleep( 10000 );
-    }
 }
