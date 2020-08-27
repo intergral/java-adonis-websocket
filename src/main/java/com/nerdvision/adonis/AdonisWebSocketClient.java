@@ -36,11 +36,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Websocket class based on OkHttp3 with {event->data} message format to make your life easier.
- *
- * @author Ali Yusuf
- * @since 3/13/17
  */
-
 @SuppressWarnings({ "unused", "UnusedReturnValue" })
 public class AdonisWebSocketClient
 {
@@ -53,6 +49,8 @@ public class AdonisWebSocketClient
     public static final String EVENT_RECONNECT_ATTEMPT = "reconnecting";
     public static final String EVENT_CLOSED = "closed";
 
+    private static final String TOPIC = "topic";
+
 
 
     /**
@@ -62,7 +60,6 @@ public class AdonisWebSocketClient
     {
         CLOSED, CLOSING, CONNECT_ERROR, RECONNECT_ATTEMPT, RECONNECTING, OPENING, OPEN
     }
-
 
 
     private static final boolean DEBUG = Boolean.parseBoolean( System.getProperty( "adonis.debug", "false" ) );
@@ -131,38 +128,42 @@ public class AdonisWebSocketClient
      * Websocket state
      */
     private State state;
+
     /**
      * Websocket main request
      */
     private final Request request;
+
     /**
      * Websocket connection
      */
     private RealWebSocket realWebSocket;
-    /**
-     * Reconnection post delayed handler
-     */
-    //    private static Handler delayedReconnection;
+
     /**
      * Websocket events listeners
      */
     private final Map<String, OnEventListener> eventListener = new HashMap<>();
+
     /**
      * Websocket events new message listeners
      */
     private final Map<String, OnEventResponseListener> eventResponseListener = new HashMap<>();
+
     /**
      * Message list tobe send onEvent open {@link State#OPEN} connection state
      */
     private final Map<String, String> onOpenMessageQueue = new HashMap<>();
+
     /**
      * Websocket state change listener
      */
     private OnStateChangeListener onChangeStateListener;
+
     /**
      * Websocket new message listener
      */
     private OnMessageListener messageListener;
+
     /**
      * Number of reconnection attempts
      */
@@ -174,7 +175,6 @@ public class AdonisWebSocketClient
     {
         this.request = request;
         state = State.CLOSED;
-        //        delayedReconnection = new Handler(Looper.getMainLooper());
         skipOnFailure = false;
     }
 
@@ -240,20 +240,27 @@ public class AdonisWebSocketClient
         {
             JSONObject text = new JSONObject();
             JSONObject topic = new JSONObject();
-            topic.put( "topic", event );
+            topic.put( TOPIC, event );
             topic.put( "event", "message" );
             topic.put( "data", new JSONObject( data ) );
             text.put( "t", 7 );
             text.put( "d", topic );
-            LOGGER.info( "Try to send data {}", text );
 
-            return realWebSocket.send( text.toString() );
+
+            return sendMessage( text );
         }
         catch( JSONException e )
         {
-            LOGGER.error( "Try to send data with wrong JSON format", data );
+            LOGGER.error( "Try to send data with wrong JSON format: {}", data, e );
         }
         return false;
+    }
+
+
+    private boolean sendMessage( final JSONObject text )
+    {
+        LOGGER.info( "Try to send data {}", text );
+        return realWebSocket.send( text.toString() );
     }
 
 
@@ -263,16 +270,15 @@ public class AdonisWebSocketClient
         {
             JSONObject text = new JSONObject();
             JSONObject topics = new JSONObject();
-            topics.put( "topic", topic );
+            topics.put( TOPIC, topic );
             text.put( "t", 1 );
             text.put( "d", topics );
-            LOGGER.info( "Try to send data {}", text );
 
-            return realWebSocket.send( text.toString() );
+            return sendMessage( text );
         }
         catch( JSONException e )
         {
-            LOGGER.error( "Try to send data with wrong JSON format", e );
+            LOGGER.error( "Try to send data with wrong JSON format.", e );
         }
         return false;
     }
@@ -291,8 +297,8 @@ public class AdonisWebSocketClient
                     {
                         JSONObject text = new JSONObject();
                         text.put( "t", 8 );
-                        LOGGER.info( "Try to send data {}", text );
-                        realWebSocket.send( text.toString() );
+
+                        sendMessage( text );
                         pingRemainingAttempts--;
                     }
                     catch( JSONException e )
@@ -527,7 +533,7 @@ public class AdonisWebSocketClient
                 }
                 else if( type == 7 )
                 {
-                    String topic = d.getString( "topic" );
+                    String topic = d.getString( TOPIC );
                     String event = d.getString( "event" );
                     JSONObject data = d.getJSONObject( "data" );
 
@@ -565,7 +571,7 @@ public class AdonisWebSocketClient
         @Override
         public void onMessage( WebSocket webSocket, ByteString bytes )
         {
-            // TODO: some action
+            // not implemented
         }
 
 
