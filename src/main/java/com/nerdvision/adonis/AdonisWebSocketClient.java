@@ -359,10 +359,7 @@ public class AdonisWebSocketClient
      */
     public void close()
     {
-        if( realWebSocket != null )
-        {
-            realWebSocket.close( 1000, CLOSE_REASON );
-        }
+        close( 1000, CLOSE_REASON );
     }
 
 
@@ -375,6 +372,7 @@ public class AdonisWebSocketClient
         {
             realWebSocket.close( code, reason );
         }
+        timer.cancel();
     }
 
 
@@ -389,6 +387,7 @@ public class AdonisWebSocketClient
             realWebSocket.cancel(); // close connection
             realWebSocket = null; // clear socket object
         }
+        timer.cancel();
     }
 
 
